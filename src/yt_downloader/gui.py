@@ -67,16 +67,16 @@ class YoutubeDownloaderGUI:
         ttk.Label(
             header_inner,
             text="flYT",
-            font=("Segoe UI", 16, "bold"),
+            font=("Segoe UI", 20, "bold"),
             bootstyle="inverse-dark",
         ).pack(side=tk.LEFT)
 
         ttk.Label(
             header_inner,
             text="v3.0  ·  Download de vídeos com qualidade",
-            font=("Segoe UI", 9),
-            bootstyle="inverse-dark",
-        ).pack(side=tk.LEFT, padx=(16, 0))
+            font=("Segoe UI", 10),
+            bootstyle="secondary-inverse",
+        ).pack(side=tk.LEFT, padx=(16, 0), pady=(4, 0))
 
         ttk.Separator(self.root).pack(fill=tk.X)
 
@@ -97,7 +97,7 @@ class YoutubeDownloaderGUI:
             ).pack(padx=16, pady=8)
 
         # ========== CONTEÚDO PRINCIPAL ==========
-        main_frame = ttk.Frame(self.root, padding=12)
+        main_frame = ttk.Frame(self.root, padding=16)
         main_frame.pack(fill=tk.BOTH, expand=True)
 
         # --- URL ---
@@ -105,10 +105,25 @@ class YoutubeDownloaderGUI:
         url_frame = ttk.Frame(main_frame, padding=12, bootstyle="dark")
         url_frame.pack(fill=tk.X, pady=(0, 16))
 
-        ttk.Label(url_frame, text="URL:", font=("Segoe UI", 10)).grid(row=0, column=0, sticky=tk.W, padx=(0, 8))
         self.url_entry = ttk.Entry(url_frame, font=("Segoe UI", 10))
-        self.url_entry.grid(row=0, column=1, sticky=tk.EW, ipady=3)
-        url_frame.columnconfigure(1, weight=1)
+        self.url_entry.pack(fill=tk.X, ipady=4)
+        
+        # Placeholder logica
+        self.url_entry.insert(0, "Cole o link do YouTube aqui...")
+        self.url_entry.configure(foreground="gray")
+
+        def on_url_focus_in(event):
+            if self.url_entry.get() == "Cole o link do YouTube aqui...":
+                self.url_entry.delete(0, tk.END)
+                self.url_entry.configure(foreground="white")
+
+        def on_url_focus_out(event):
+            if not self.url_entry.get().strip():
+                self.url_entry.insert(0, "Cole o link do YouTube aqui...")
+                self.url_entry.configure(foreground="gray")
+
+        self.url_entry.bind("<FocusIn>", on_url_focus_in)
+        self.url_entry.bind("<FocusOut>", on_url_focus_out)
 
         # --- OPÇÕES ---
         ttk.Label(main_frame, text="Opções de Download", font=("Segoe UI", 10, "bold")).pack(anchor=tk.W, pady=(0, 4))
@@ -116,41 +131,41 @@ class YoutubeDownloaderGUI:
         opts_frame.pack(fill=tk.X, pady=(0, 16))
 
         # Tipo de download
-        ttk.Label(opts_frame, text="Tipo:").grid(row=0, column=0, sticky=tk.W, pady=4, padx=(0, 8))
+        ttk.Label(opts_frame, text="Tipo:", width=10).grid(row=0, column=0, sticky=tk.W, pady=6, padx=(0, 8))
         self.tipo_var = tk.StringVar(value="video")
         tipo_inner = ttk.Frame(opts_frame)
-        tipo_inner.grid(row=0, column=1, sticky=tk.W, pady=4)
-        ttk.Radiobutton(tipo_inner, text="Vídeo", variable=self.tipo_var, value="video", bootstyle="info-toolbutton").pack(side=tk.LEFT, padx=(0, 6))
-        ttk.Radiobutton(tipo_inner, text="Playlist", variable=self.tipo_var, value="playlist", bootstyle="info-toolbutton").pack(side=tk.LEFT)
+        tipo_inner.grid(row=0, column=1, sticky=tk.W, pady=6)
+        ttk.Radiobutton(tipo_inner, text=" Vídeo ", variable=self.tipo_var, value="video", bootstyle="primary-toolbutton").pack(side=tk.LEFT)
+        ttk.Radiobutton(tipo_inner, text=" Playlist ", variable=self.tipo_var, value="playlist", bootstyle="primary-toolbutton").pack(side=tk.LEFT)
 
         # Qualidade
-        ttk.Label(opts_frame, text="Qualidade:").grid(row=1, column=0, sticky=tk.W, pady=4, padx=(0, 8))
+        ttk.Label(opts_frame, text="Qualidade:", width=10).grid(row=1, column=0, sticky=tk.W, pady=6, padx=(0, 8))
         self.qualidade_var = tk.StringVar(value="Melhor (automático)")
         ttk.Combobox(
             opts_frame, textvariable=self.qualidade_var,
-            values=list(QUALIDADES.keys()), state="readonly", width=28,
-        ).grid(row=1, column=1, sticky=tk.W, pady=4)
+            values=list(QUALIDADES.keys()), state="readonly", width=30,
+        ).grid(row=1, column=1, sticky=tk.W, pady=6, ipady=3)
 
         # Formato
-        ttk.Label(opts_frame, text="Formato:").grid(row=2, column=0, sticky=tk.W, pady=4, padx=(0, 8))
+        ttk.Label(opts_frame, text="Formato:", width=10).grid(row=2, column=0, sticky=tk.W, pady=6, padx=(0, 8))
         self.formato_var = tk.StringVar(value="MP4")
         ttk.Combobox(
             opts_frame, textvariable=self.formato_var,
-            values=list(FORMATOS.keys()), state="readonly", width=28,
-        ).grid(row=2, column=1, sticky=tk.W, pady=4)
+            values=list(FORMATOS.keys()), state="readonly", width=30,
+        ).grid(row=2, column=1, sticky=tk.W, pady=6, ipady=3)
 
         # Categoria
-        ttk.Label(opts_frame, text="Categoria:").grid(row=3, column=0, sticky=tk.W, pady=4, padx=(0, 8))
+        ttk.Label(opts_frame, text="Categoria:", width=10).grid(row=3, column=0, sticky=tk.W, pady=6, padx=(0, 8))
         self.categoria_var = tk.StringVar(value="Geral")
-        self.categoria_entry = ttk.Entry(opts_frame, width=30, textvariable=self.categoria_var)
-        self.categoria_entry.grid(row=3, column=1, sticky=tk.W, pady=4)
+        self.categoria_entry = ttk.Entry(opts_frame, width=32, textvariable=self.categoria_var)
+        self.categoria_entry.grid(row=3, column=1, sticky=tk.W, pady=6, ipady=3)
 
         # Renomear
         self.renomear_var = tk.BooleanVar(value=True)
         ttk.Checkbutton(
             opts_frame, text="Renomear com data/hora",
-            variable=self.renomear_var, bootstyle="info-round-toggle",
-        ).grid(row=4, column=1, sticky=tk.W, pady=4)
+            variable=self.renomear_var, bootstyle="primary-round-toggle",
+        ).grid(row=4, column=1, sticky=tk.W, pady=6)
 
         opts_frame.columnconfigure(1, weight=1)
 
@@ -158,11 +173,11 @@ class YoutubeDownloaderGUI:
         btn_frame = ttk.Frame(main_frame)
         btn_frame.pack(fill=tk.X, pady=(4, 8))
 
-        # Ação primária — destaque visual
+        # Ação primária — cor base
         ttk.Button(
             btn_frame, text="▶  Baixar",
             command=self.baixar_video,
-            bootstyle=SUCCESS, width=16,
+            bootstyle=PRIMARY, width=16,
         ).pack(side=tk.LEFT, padx=(0, 6))
 
         # Ações secundárias
@@ -184,11 +199,11 @@ class YoutubeDownloaderGUI:
             bootstyle=SECONDARY, width=14,
         ).pack(side=tk.LEFT, padx=(0, 6))
 
-        # Ação destrutiva — isolada à direita
+        # Ação destrutiva — Ghost button isolado à direita
         ttk.Button(
             btn_frame, text="Resetar Histórico",
             command=self.resetar_historico,
-            bootstyle=f"{DANGER}-outline", width=18,
+            bootstyle="danger-link", width=18, cursor="hand2"
         ).pack(side=tk.RIGHT)
 
         # --- PROGRESSO ---
@@ -248,7 +263,7 @@ class YoutubeDownloaderGUI:
         self.log_text.pack(fill=tk.BOTH, expand=True)
 
         # Tags de cor para o log
-        self.log_text.tag_configure("info", foreground=style.colors.info)
+        self.log_text.tag_configure("normal", foreground=fg_color)
         self.log_text.tag_configure("success", foreground=style.colors.success)
         self.log_text.tag_configure("warning", foreground=style.colors.warning)
         self.log_text.tag_configure("error", foreground=style.colors.danger)
@@ -263,22 +278,31 @@ class YoutubeDownloaderGUI:
 
     def _log_welcome(self):
         """Exibe mensagem inicial no log."""
-        self.log_message("Pronto para uso.", "INFO")
-        self.log_message('Cole uma URL do YouTube acima e clique em "Baixar" para começar.', "INFO")
+        self.log_message("Pronto para uso.", "NORMAL")
+        self.log_message('Cole uma URL do YouTube acima e clique em "Baixar" para começar.', "NORMAL")
         if not self.downloader.ffmpeg_instalado:
             self.log_message(
                 "ffmpeg não encontrado — downloads que precisam de merge/conversão podem falhar.",
                 "WARNING",
             )
 
-    def log_message(self, message: str, level: str = "INFO"):
+    def log_message(self, message: str, level: str = "NORMAL"):
         """Escreve mensagem no log visual com cores por nível."""
         self.log_text.config(state=tk.NORMAL)
         timestamp = datetime.now().strftime("%H:%M:%S")
 
         tag = level.lower()
-        if tag not in ("info", "success", "warning", "error"):
-            tag = "info"
+        if tag not in ("normal", "success", "warning", "error"):
+            # Auto detect based on message content
+            msg_lower = message.lower()
+            if "erro" in msg_lower or "falha" in msg_lower or "error" in msg_lower:
+                tag = "error"
+            elif "aviso" in msg_lower or "atenção" in msg_lower or "warning" in msg_lower:
+                tag = "warning"
+            elif "sucesso" in msg_lower or "concluído" in msg_lower:
+                tag = "success"
+            else:
+                tag = "normal"
 
         self.log_text.insert(tk.END, f"[{timestamp}] ", "dim")
         self.log_text.insert(tk.END, f"{message}\n", tag)

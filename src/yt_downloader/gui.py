@@ -126,48 +126,59 @@ class YoutubeDownloaderGUI:
         self.url_entry.bind("<FocusOut>", on_url_focus_out)
 
         # --- OPÇÕES ---
-        ttk.Label(main_frame, text="Opções de Download", font=("Segoe UI", 10, "bold")).pack(anchor=tk.W, pady=(0, 4))
-        opts_frame = ttk.Frame(main_frame, padding=12, bootstyle="dark")
+        ttk.Label(main_frame, text="OPÇÕES DE DOWNLOAD", font=("Segoe UI", 10, "bold"), foreground="#888888").pack(anchor=tk.W, pady=(8, 8))
+        opts_frame = ttk.Frame(main_frame)
         opts_frame.pack(fill=tk.X, pady=(0, 16))
 
-        # Tipo de download
-        ttk.Label(opts_frame, text="Tipo:", width=10).grid(row=0, column=0, sticky=tk.W, pady=6, padx=(0, 8))
+        # Configurar 4 colunas com peso igual
+        opts_frame.columnconfigure(0, weight=1, uniform="opts")
+        opts_frame.columnconfigure(1, weight=1, uniform="opts")
+        opts_frame.columnconfigure(2, weight=1, uniform="opts")
+        opts_frame.columnconfigure(3, weight=1, uniform="opts")
+
+        # Labels (Cabeçalhos das colunas)
+        ttk.Label(opts_frame, text="Tipo de Conteúdo", font=("Segoe UI", 9)).grid(row=0, column=0, sticky=tk.W, pady=(0, 4), padx=(0, 10))
+        ttk.Label(opts_frame, text="Qualidade Desejada", font=("Segoe UI", 9)).grid(row=0, column=1, sticky=tk.W, pady=(0, 4), padx=(0, 10))
+        ttk.Label(opts_frame, text="Formato do Arquivo", font=("Segoe UI", 9)).grid(row=0, column=2, sticky=tk.W, pady=(0, 4), padx=(0, 10))
+        ttk.Label(opts_frame, text="Pasta / Categoria", font=("Segoe UI", 9)).grid(row=0, column=3, sticky=tk.W, pady=(0, 4), padx=(0, 10))
+
+        # Coluna 0: Tipo
         self.tipo_var = tk.StringVar(value="video")
         tipo_inner = ttk.Frame(opts_frame)
-        tipo_inner.grid(row=0, column=1, sticky=tk.W, pady=6)
-        ttk.Radiobutton(tipo_inner, text=" Vídeo ", variable=self.tipo_var, value="video", bootstyle="success-toolbutton").pack(side=tk.LEFT)
-        ttk.Radiobutton(tipo_inner, text=" Playlist ", variable=self.tipo_var, value="playlist", bootstyle="success-toolbutton").pack(side=tk.LEFT)
+        tipo_inner.grid(row=1, column=0, sticky=tk.EW, padx=(0, 10))
+        ttk.Radiobutton(tipo_inner, text="Vídeo", variable=self.tipo_var, value="video", bootstyle="success-toolbutton").pack(side=tk.LEFT, fill=tk.X, expand=True)
+        ttk.Radiobutton(tipo_inner, text="Playlist", variable=self.tipo_var, value="playlist", bootstyle="success-toolbutton").pack(side=tk.LEFT, fill=tk.X, expand=True)
 
-        # Qualidade
-        ttk.Label(opts_frame, text="Qualidade:", width=10).grid(row=1, column=0, sticky=tk.W, pady=6, padx=(0, 8))
+        # Coluna 1: Qualidade
         self.qualidade_var = tk.StringVar(value="Melhor (automático)")
         ttk.Combobox(
             opts_frame, textvariable=self.qualidade_var,
-            values=list(QUALIDADES.keys()), state="readonly", width=30,
-        ).grid(row=1, column=1, sticky=tk.W, pady=6, ipady=3)
+            values=list(QUALIDADES.keys()), state="readonly"
+        ).grid(row=1, column=1, sticky=tk.EW, padx=(0, 10), ipady=3)
 
-        # Formato
-        ttk.Label(opts_frame, text="Formato:", width=10).grid(row=2, column=0, sticky=tk.W, pady=6, padx=(0, 8))
+        # Coluna 2: Formato
         self.formato_var = tk.StringVar(value="MP4")
         ttk.Combobox(
             opts_frame, textvariable=self.formato_var,
-            values=list(FORMATOS.keys()), state="readonly", width=30,
-        ).grid(row=2, column=1, sticky=tk.W, pady=6, ipady=3)
+            values=list(FORMATOS.keys()), state="readonly"
+        ).grid(row=1, column=2, sticky=tk.EW, padx=(0, 10), ipady=3)
 
-        # Categoria
-        ttk.Label(opts_frame, text="Categoria:", width=10).grid(row=3, column=0, sticky=tk.W, pady=6, padx=(0, 8))
+        # Coluna 3: Categoria
         self.categoria_var = tk.StringVar(value="Geral")
-        self.categoria_entry = ttk.Entry(opts_frame, width=32, textvariable=self.categoria_var)
-        self.categoria_entry.grid(row=3, column=1, sticky=tk.W, pady=6, ipady=3)
+        self.categoria_entry = ttk.Entry(opts_frame, textvariable=self.categoria_var)
+        self.categoria_entry.grid(row=1, column=3, sticky=tk.EW, padx=(0, 10), ipady=3)
 
-        # Renomear
+        # Linha inferior (Renomear) - Span 4 colunas
+        bottom_opts_frame = ttk.Frame(main_frame)
+        bottom_opts_frame.pack(fill=tk.X, pady=(0, 16))
+        
         self.renomear_var = tk.BooleanVar(value=True)
         ttk.Checkbutton(
-            opts_frame, text="Renomear com data/hora",
-            variable=self.renomear_var, bootstyle="success-round-toggle",
-        ).grid(row=4, column=1, sticky=tk.W, pady=6)
-
-        opts_frame.columnconfigure(1, weight=1)
+            bottom_opts_frame, text="Renomear arquivo adicionando data/hora do download",
+            variable=self.renomear_var, bootstyle="success-square-toggle",
+        ).pack(side=tk.LEFT)
+        
+        ttk.Label(bottom_opts_frame, text="Destino: /downloads/flYT/", font=("Segoe UI", 9), foreground="#888888").pack(side=tk.RIGHT)
 
         # --- BOTÕES ---
         btn_frame = ttk.Frame(main_frame)

@@ -1,0 +1,16 @@
+# YouTube Downloader - Dependências
+
+# Core de download de vídeo
+yt-dlp>=2023.12.30
+
+# Interface gráfica — tema e estilos
+ttkbootstrap>=1.10.0
+
+# Interface gráfica (incluído no Python, mas documentado)
+# tkinter (built-in)
+
+# Dependências do sistema (NÃO incluir no pip):
+# - ffmpeg (para conversão de áudio e melhor qualidade)
+#   Windows: choco install ffmpeg
+#   Linux: sudo apt-get install ffmpeg
+#   macOS: brew install ffmpeg

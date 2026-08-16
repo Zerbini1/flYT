@@ -1,0 +1,39 @@
+# ============================================================================
+# YouTube Downloader Pro — .gitignore
+# ============================================================================
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+*.egg
+dist/
+build/
+
+# Virtual environment
+.venv/
+venv/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# PyInstaller
+*.spec
+*.exe
+*.manifest
+
+# Runtime data (criados automaticamente pelo app)
+downloads/
+logs/
+
+# OS
+Thumbs.db
+.DS_Store
+desktop.ini

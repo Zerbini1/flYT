@@ -23,6 +23,15 @@ class YoutubeDownloaderGUI:
         self.root.resizable(True, True)
         self.root.minsize(860, 680)
 
+        # Aplicar cor escura na barra de título do Windows
+        import sys
+        if sys.platform == "win32":
+            try:
+                import pywinstyles
+                pywinstyles.change_header_color(self.root, color="#222222")
+            except ImportError:
+                pass
+
         # Centralizar janela na tela
         self._center_window()
 
@@ -92,8 +101,9 @@ class YoutubeDownloaderGUI:
         main_frame.pack(fill=tk.BOTH, expand=True)
 
         # --- URL ---
-        url_frame = ttk.LabelFrame(main_frame, text="URL do Vídeo ou Playlist", padding=10, bootstyle="primary")
-        url_frame.pack(fill=tk.X, pady=(0, 8))
+        ttk.Label(main_frame, text="URL do Vídeo ou Playlist", font=("Segoe UI", 10, "bold")).pack(anchor=tk.W, pady=(0, 4))
+        url_frame = ttk.Frame(main_frame, padding=12, bootstyle="dark")
+        url_frame.pack(fill=tk.X, pady=(0, 16))
 
         ttk.Label(url_frame, text="URL:", font=("Segoe UI", 10)).grid(row=0, column=0, sticky=tk.W, padx=(0, 8))
         self.url_entry = ttk.Entry(url_frame, font=("Segoe UI", 10))
@@ -101,8 +111,9 @@ class YoutubeDownloaderGUI:
         url_frame.columnconfigure(1, weight=1)
 
         # --- OPÇÕES ---
-        opts_frame = ttk.LabelFrame(main_frame, text="Opções de Download", padding=10, bootstyle="info")
-        opts_frame.pack(fill=tk.X, pady=(0, 8))
+        ttk.Label(main_frame, text="Opções de Download", font=("Segoe UI", 10, "bold")).pack(anchor=tk.W, pady=(0, 4))
+        opts_frame = ttk.Frame(main_frame, padding=12, bootstyle="dark")
+        opts_frame.pack(fill=tk.X, pady=(0, 16))
 
         # Tipo de download
         ttk.Label(opts_frame, text="Tipo:").grid(row=0, column=0, sticky=tk.W, pady=4, padx=(0, 8))
@@ -170,7 +181,7 @@ class YoutubeDownloaderGUI:
         ttk.Button(
             btn_frame, text="Abrir Pasta",
             command=self.abrir_pasta_destino,
-            bootstyle=f"{SECONDARY}-outline", width=14,
+            bootstyle=SECONDARY, width=14,
         ).pack(side=tk.LEFT, padx=(0, 6))
 
         # Ação destrutiva — isolada à direita
@@ -181,7 +192,8 @@ class YoutubeDownloaderGUI:
         ).pack(side=tk.RIGHT)
 
         # --- PROGRESSO ---
-        status_frame = ttk.LabelFrame(main_frame, text="Status", padding=10, bootstyle="secondary")
+        ttk.Label(main_frame, text="Status", font=("Segoe UI", 10, "bold")).pack(anchor=tk.W, pady=(8, 4))
+        status_frame = ttk.Frame(main_frame, padding=12, bootstyle="dark")
         status_frame.pack(fill=tk.BOTH, expand=True)
 
         # Label de progresso
@@ -228,7 +240,7 @@ class YoutubeDownloaderGUI:
             fg=fg_color,
             insertbackground=style.colors.primary,
             selectbackground=style.colors.selectbg,
-            font=("Consolas", 9),
+            font=("Consolas", 10),
             relief=tk.FLAT,
             borderwidth=1,
             wrap=tk.WORD,

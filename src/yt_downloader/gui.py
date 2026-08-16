@@ -135,8 +135,8 @@ class YoutubeDownloaderGUI:
         self.tipo_var = tk.StringVar(value="video")
         tipo_inner = ttk.Frame(opts_frame)
         tipo_inner.grid(row=0, column=1, sticky=tk.W, pady=6)
-        ttk.Radiobutton(tipo_inner, text=" Vídeo ", variable=self.tipo_var, value="video", bootstyle="primary-toolbutton").pack(side=tk.LEFT)
-        ttk.Radiobutton(tipo_inner, text=" Playlist ", variable=self.tipo_var, value="playlist", bootstyle="primary-toolbutton").pack(side=tk.LEFT)
+        ttk.Radiobutton(tipo_inner, text=" Vídeo ", variable=self.tipo_var, value="video", bootstyle="success-toolbutton").pack(side=tk.LEFT)
+        ttk.Radiobutton(tipo_inner, text=" Playlist ", variable=self.tipo_var, value="playlist", bootstyle="success-toolbutton").pack(side=tk.LEFT)
 
         # Qualidade
         ttk.Label(opts_frame, text="Qualidade:", width=10).grid(row=1, column=0, sticky=tk.W, pady=6, padx=(0, 8))
@@ -164,7 +164,7 @@ class YoutubeDownloaderGUI:
         self.renomear_var = tk.BooleanVar(value=True)
         ttk.Checkbutton(
             opts_frame, text="Renomear com data/hora",
-            variable=self.renomear_var, bootstyle="primary-round-toggle",
+            variable=self.renomear_var, bootstyle="success-round-toggle",
         ).grid(row=4, column=1, sticky=tk.W, pady=6)
 
         opts_frame.columnconfigure(1, weight=1)
@@ -177,20 +177,20 @@ class YoutubeDownloaderGUI:
         ttk.Button(
             btn_frame, text="▶  Baixar",
             command=self.baixar_video,
-            bootstyle=PRIMARY, width=16,
+            bootstyle=SUCCESS, width=16,
         ).pack(side=tk.LEFT, padx=(0, 6))
 
         # Ações secundárias
         ttk.Button(
             btn_frame, text="Baixar Playlist",
             command=self.baixar_playlist,
-            bootstyle=f"{PRIMARY}-outline", width=16,
+            bootstyle=f"{SUCCESS}-outline", width=16,
         ).pack(side=tk.LEFT, padx=(0, 6))
 
         ttk.Button(
             btn_frame, text="Baixar em Lote",
             command=self.abrir_lote,
-            bootstyle=f"{PRIMARY}-outline", width=16,
+            bootstyle=f"{SUCCESS}-outline", width=16,
         ).pack(side=tk.LEFT, padx=(0, 6))
 
         ttk.Button(
@@ -264,10 +264,13 @@ class YoutubeDownloaderGUI:
 
         # Tags de cor para o log
         self.log_text.tag_configure("normal", foreground=fg_color)
-        self.log_text.tag_configure("success", foreground=style.colors.success)
-        self.log_text.tag_configure("warning", foreground=style.colors.warning)
-        self.log_text.tag_configure("error", foreground=style.colors.danger)
         self.log_text.tag_configure("dim", foreground="#888888")
+        
+        # Tags de Badges
+        self.log_text.tag_configure("info_badge", foreground=style.colors.info, font=("Consolas", 10, "bold"))
+        self.log_text.tag_configure("success_badge", foreground=style.colors.success, font=("Consolas", 10, "bold"))
+        self.log_text.tag_configure("warning_badge", foreground=style.colors.warning, font=("Consolas", 10, "bold"))
+        self.log_text.tag_configure("error_badge", foreground=style.colors.danger, font=("Consolas", 10, "bold"))
 
         # Mensagem de boas-vindas
         self._log_welcome()
@@ -278,16 +281,16 @@ class YoutubeDownloaderGUI:
 
     def _log_welcome(self):
         """Exibe mensagem inicial no log."""
-        self.log_message("Pronto para uso.", "NORMAL")
-        self.log_message('Cole uma URL do YouTube acima e clique em "Baixar" para começar.', "NORMAL")
+        self.log_message("Sistema flYT v3.0 inicializado e pronto para uso.", "INFO")
+        self.log_message('Cole uma URL do YouTube acima e clique em "Baixar".', "INFO")
         if not self.downloader.ffmpeg_instalado:
             self.log_message(
-                "ffmpeg não encontrado — downloads que precisam de merge/conversão podem falhar.",
+                "ffmpeg não encontrado — conversões de áudio podem falhar.",
                 "WARNING",
             )
 
     def log_message(self, message: str, level: str = "NORMAL"):
-        """Escreve mensagem no log visual com cores por nível."""
+        """Escreve mensagem no log visual com badges."""
         self.log_text.config(state=tk.NORMAL)
         timestamp = datetime.now().strftime("%H:%M:%S")
 
@@ -302,10 +305,26 @@ class YoutubeDownloaderGUI:
             elif "sucesso" in msg_lower or "concluído" in msg_lower:
                 tag = "success"
             else:
-                tag = "normal"
+                tag = "info"
 
-        self.log_text.insert(tk.END, f"[{timestamp}] ", "dim")
-        self.log_text.insert(tk.END, f"{message}\n", tag)
+        badge_text = ""
+        badge_tag = ""
+        if tag == "success":
+            badge_text = " SUCESSO "
+            badge_tag = "success_badge"
+        elif tag == "error":
+            badge_text = " ERRO "
+            badge_tag = "error_badge"
+        elif tag == "warning":
+            badge_text = " AVISO "
+            badge_tag = "warning_badge"
+        else:
+            badge_text = " INFO "
+            badge_tag = "info_badge"
+
+        self.log_text.insert(tk.END, f"[{timestamp}]", "dim")
+        self.log_text.insert(tk.END, badge_text, badge_tag)
+        self.log_text.insert(tk.END, f"{message}\n", "normal")
         self.log_text.see(tk.END)
         self.log_text.config(state=tk.DISABLED)
         self.root.update_idletasks()
